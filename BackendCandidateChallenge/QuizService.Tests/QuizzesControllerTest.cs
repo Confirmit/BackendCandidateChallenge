@@ -63,7 +63,7 @@ public class QuizzesControllerTest
     }
 
     [Fact]
-        
+
     public async Task AQuizDoesNotExists_WhenPostingAQuestion_ReturnsNotFound()
     {
         const string QuizApiEndPoint = "/api/quizzes/999/questions";
@@ -76,8 +76,75 @@ public class QuizzesControllerTest
             var question = new QuestionCreateModel("The answer to everything is what?");
             var content = new StringContent(JsonConvert.SerializeObject(question));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var response = await client.PostAsync(new Uri(testHost.BaseAddress, $"{QuizApiEndPoint}"),content);
+            var response = await client.PostAsync(new Uri(testHost.BaseAddress, $"{QuizApiEndPoint}"), content);
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+    }
+
+    /// <summary>
+    /// This Test method created to test functionality to generate a single Quiz with Id=3,
+    /// with creating two question and ,
+    /// each question having two answer ,
+    ///  updating Question by adding CorrectAnswer by Put method.
+    /// </summary>
+    /// <returns></returns>
+
+    [Fact]
+    public async Task CreateQuizWithTwoQuestionsAndTwoAnswersEach()
+    {
+        const string QuizApiEndPoint = "/api/quizzes";
+        const int quizId = 3;
+
+        using (var testHost = new TestServer(new WebHostBuilder().UseStartup<Startup>()))
+        {
+            int i;
+            var client = testHost.CreateClient();
+
+            var quiz = new QuizCreateModel("Creating a new Quiz.");
+            var content = new StringContent(JsonConvert.SerializeObject(quiz));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var response = await client.PostAsync(new Uri(testHost.BaseAddress, $"{QuizApiEndPoint}"), content);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            Assert.NotNull(response.Headers.Location);
+
+            /*-----------This loop is created to Post Question-----------------------------------------------------------------------------*/
+
+            for (i = 1; i < 3; i++)
+            {
+                var QuestPostApiEndPoint = $"/api/quizzes/{quizId}/questions";
+                var question = new QuestionCreateModel($"This is Question id: {i}");
+                content = new StringContent(JsonConvert.SerializeObject(question));
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                var responseQuestion = await client.PostAsync(new Uri(testHost.BaseAddress, QuestPostApiEndPoint), content);
+                Assert.Equal(HttpStatusCode.Created, responseQuestion.StatusCode);
+                Assert.NotNull(responseQuestion.Headers.Location);
+
+                /*-----------This loop is created to Post two answer for each question, created in above loop-------------------------------------*/
+
+                for (int j = 1; j < 3; j++)
+                {
+                    var answerPostApiEndPoint = $"/api/quizzes/{quizId}/questions/{i}/answers";
+                    var answer = new AnswerCreateModel($"This is answer {j} for question id: {i}");
+                    content = new StringContent(JsonConvert.SerializeObject(answer));
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    var responseAnswer = await client.PostAsync(new Uri(testHost.BaseAddress, answerPostApiEndPoint), content);
+                    Assert.Equal(HttpStatusCode.Created, responseAnswer.StatusCode);
+                    Assert.NotNull(responseAnswer.Headers.Location);
+                }
+
+                /*---------Here we are updating Question, adding CorrectAnswerId and Text for each Question after generating Question and Answer--------*/
+
+                var questionPutApiEndPoint = $"/api/quizzes/{quizId}/questions/{i}";
+                var questiontoupdate = new QuestionUpdateModel { CorrectAnswerId = 1, Text = $"This question with id: {i} is updated" };
+                content = new StringContent(JsonConvert.SerializeObject(questiontoupdate));
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var responseupdateQuestion = await client.PutAsync(new Uri(testHost.BaseAddress, questionPutApiEndPoint), content);
+                Assert.Equal(HttpStatusCode.NoContent, responseupdateQuestion.StatusCode);
+
+            }
+
+
         }
     }
 }

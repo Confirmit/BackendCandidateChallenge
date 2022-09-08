@@ -21,11 +21,13 @@ public class Startup
     public IConfiguration Configuration { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
+    //Todo : We can add functionality for Swagger/Open Api, to access and test the API on Swagger  along with Postman.
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddMvc();
         services.AddSingleton(InitializeDb());
         services.AddControllers();
+        services.AddScoped<IQuizService, QuizService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
