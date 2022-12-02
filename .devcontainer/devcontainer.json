@@ -1,0 +1,16 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+  },
+  "extensions": [
+      // dotnet
+      "ms-dotnettools.csharp",
+      "formulahendry.dotnet-test-explorer",
+      //git
+      "eamodio.gitlens",
+      "mhutchie.git-graph",
+      "codezombiech.gitignore",
+      // MISC
+      "editorconfig.editorconfig"
+  ]
+}
