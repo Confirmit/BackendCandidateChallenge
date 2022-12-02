@@ -11,6 +11,8 @@
       "mhutchie.git-graph",
       "codezombiech.gitignore",
       // MISC
-      "editorconfig.editorconfig"
+      "editorconfig.editorconfig",
+      "usernamehw.errorlens",
+      "pflannery.vscode-versionlens"
   ]
 }
