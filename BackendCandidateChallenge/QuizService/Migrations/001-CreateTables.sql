@@ -1,11 +1,11 @@
 CREATE TABLE [Quiz](
-    [Id] [integer] IDENTITY(1,1) NOT NULL,
+    [Id] INTEGER NOT NULL,
     [Title] [nvarchar](256) NOT NULL,
     CONSTRAINT [PK_Quiz] PRIMARY KEY ([Id] ASC)
 );
 
 CREATE TABLE [Question](
-    [Id] [integer] IDENTITY(1,1) NOT NULL,
+    [Id] INTEGER NOT NULL,
     [Text] [nvarchar](256) NOT NULL,
     [QuizId] [int] NOT NULL,
     [CorrectAnswerId] [int] NULL,
@@ -15,7 +15,7 @@ CREATE TABLE [Question](
 );
 
 CREATE TABLE [Answer](
-    [Id] [integer] IDENTITY(1,1) NOT NULL,
+    [Id] INTEGER NOT NULL,
     [Text] [nvarchar](256) NOT NULL,
     [QuestionId] [int] NOT NULL,
     CONSTRAINT [PK_Answer] PRIMARY KEY ([Id] ASC),
@@ -23,7 +23,7 @@ CREATE TABLE [Answer](
 );
 
 CREATE TABLE [QuizResponse](
-	[Id] [integer] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[Id] INTEGER NOT NULL PRIMARY KEY,
 	[QuizId] [integer] NOT NULL,
 	[QuestionId] [integer] NOT NULL,
 	[AnswerId] [integer] NOT NULL,
